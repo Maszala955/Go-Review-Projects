@@ -10,12 +10,16 @@ func main() {
 	}
 	fmt.Println(person.Name)
 	fmt.Println(person.Age)
-
+	person.Describe()
 }
 
 func Greet(name string) {
 	fmt.Printf("Welcome %s \n", name)
 
+}
+
+func (p Person) Describe() {
+	fmt.Printf("Je m'appelle %s et j'ai %d ans \n", p.Name, p.Age)
 }
 
 type Person struct {
