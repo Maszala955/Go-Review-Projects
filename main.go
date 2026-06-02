@@ -3,14 +3,17 @@ package main
 import "fmt"
 
 func main() {
-	Greet("Gladys")
-	person := Person{
-		Name: "Joe Lap",
-		Age:  40,
-	}
-	fmt.Println(person.Name)
-	fmt.Println(person.Age)
-	person.Describe()
+	// Greet("Gladys")
+	// person := Person{
+	// 	Name: "Joe Lap",
+	// 	Age:  40,
+	// }
+	// fmt.Println(person.Name)
+	// fmt.Println(person.Age)
+	// person.Describe()
+
+	Présenter(Animal{"Chien"})
+	Présenter(Person{Name: "Joe", Age: 33})
 }
 
 func Greet(name string) {
@@ -27,9 +30,18 @@ type Person struct {
 	Age  int
 }
 
-/* Exercice 3 — Les méthodes
+type Describer interface {
+	Describe()
+}
 
-En Go, on peut attacher une fonction directement à un struct. On appelle ça une méthode.
-Crée une méthode Describe sur Person qui affiche "Je m'appelle <Name> et j'ai <Age> ans". Appelle-la depuis main.
-> Indice : la syntaxe ressemble à une fonction normale, mais avec quelque chose de plus entre func et le nom...
-*/
+type Animal struct {
+	Species string
+}
+
+func (a Animal) Describe() {
+	fmt.Printf("Je suis un %s\n", a.Species)
+}
+
+func Présenter (d Describer) {
+	d.Describe()
+}
