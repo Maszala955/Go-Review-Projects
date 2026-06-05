@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"time"
 )
 
 func main() {
@@ -65,7 +64,7 @@ func main() {
 	// } else {
 	// 	AfficherProduit(product3)
 	// }
-	// Exo3 
+	// Exo3
 	// student1, err := NouvelEtudiant("Alexis", 80, 90.44)
 	// if err != nil {
 	// 	fmt.Printf("Errors")
@@ -85,9 +84,15 @@ func main() {
 	// 	AfficherEtudiant(student3)
 	// }
 	// Go routine
-	go Compter("Alex", 100)
-	go Compter("Marie", 100)
-	time.Sleep(time.Second) // Permet de faire de la concurrence
+	// go Compter("Alex", 100)
+	// go Compter("Marie", 100)
+	// time.Sleep(time.Second) // Permet de faire de la concurrence
+	//
+	// Channels
+	ch := make(chan int)
+	go Calculer(5, 2, ch)
+	ch1 := <-ch
+	fmt.Print(ch1, "\n")
 }
 
 func Greet(name string) {
@@ -136,3 +141,8 @@ func Compter(nom string, n int) {
 	}
 }
 
+// Channels
+func Calculer(a, b int, ch chan int) {
+	result := a + b
+	ch <- result
+}
