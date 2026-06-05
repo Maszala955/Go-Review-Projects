@@ -87,7 +87,7 @@ func main() {
 	// Go routine
 	go Compter("Alex", 100)
 	go Compter("Marie", 100)
-	time.Sleep(time.Second)
+	time.Sleep(time.Second) // Permet de faire de la concurrence
 }
 
 func Greet(name string) {
@@ -131,7 +131,7 @@ func Diviser(a, b float64) (float64, error) {
 
 // go routine
 func Compter(nom string, n int) {
-	for i := 0; i < n; i++ {
+	for i := range n {
 		fmt.Printf("%s : %d \n", nom, i)
 	}
 }
