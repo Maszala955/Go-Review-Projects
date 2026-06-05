@@ -28,11 +28,9 @@ func StartServer() {
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Hello World")
 	}
-
 	h2 := func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Bienvenue sur mon serveur")
 	}
-
 	h3 := func(w http.ResponseWriter, r *http.Request) {
 		name := r.URL.Query().Get("name")
 		email := r.URL.Query().Get("email")
@@ -54,7 +52,7 @@ func StartServer() {
 	h4 := func(w http.ResponseWriter, r *http.Request) {
 		var user User
 		// décode le body JSON dans user
-		
+
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
