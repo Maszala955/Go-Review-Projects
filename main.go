@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"time"
 )
 
 func main() {
@@ -65,24 +66,28 @@ func main() {
 	// 	AfficherProduit(product3)
 	// }
 	// Exo3 
-	student1, err := NouvelEtudiant("Alexis", 80, 90.44)
-	if err != nil {
-		fmt.Printf("Errors")
-	} else {
-		AfficherEtudiant(student1)
-	}
-	student2, err := NouvelEtudiant("Marie", 50, -90.44)
-	if err != nil {
-		fmt.Printf("Grade inférieur à 0 \n")
-	} else {
-		AfficherEtudiant(student2)
-	}
-	student3, err := NouvelEtudiant("Alexis", 80, 190.44)
-	if err != nil {
-		fmt.Printf("Score inférieur à 0\n")
-	} else {
-		AfficherEtudiant(student3)
-	}
+	// student1, err := NouvelEtudiant("Alexis", 80, 90.44)
+	// if err != nil {
+	// 	fmt.Printf("Errors")
+	// } else {
+	// 	AfficherEtudiant(student1)
+	// }
+	// student2, err := NouvelEtudiant("Marie", 50, -90.44)
+	// if err != nil {
+	// 	fmt.Printf("Grade inférieur à 0 \n")
+	// } else {
+	// 	AfficherEtudiant(student2)
+	// }
+	// student3, err := NouvelEtudiant("Alexis", 80, 190.44)
+	// if err != nil {
+	// 	fmt.Printf("Score inférieur à 0\n")
+	// } else {
+	// 	AfficherEtudiant(student3)
+	// }
+	// Go routine
+	go Compter("Alex", 100)
+	go Compter("Marie", 100)
+	time.Sleep(time.Second)
 }
 
 func Greet(name string) {
@@ -123,3 +128,11 @@ func Diviser(a, b float64) (float64, error) {
 	result := a / b
 	return result, nil
 }
+
+// go routine
+func Compter(nom string, n int) {
+	for i := 0; i < n; i++ {
+		fmt.Printf("%s : %d \n", nom, i)
+	}
+}
+
