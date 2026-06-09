@@ -8,6 +8,9 @@ import (
 	"strconv"
 
 	"main/models"
+	"main/repository"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // Deux concept clés :
@@ -25,7 +28,7 @@ Crée un handler pour la route `/` qui répond `"Bienvenue sur mon serveur !"`
 Démarre le serveur sur le port `8080`
 */
 
-func StartServer() {
+func StartServer(conn *pgx.Conn) {
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Hello World")
 	}
@@ -52,12 +55,16 @@ func StartServer() {
 	}
 	h4 := func(w http.ResponseWriter, r *http.Request) {
 		var user models.User
-		// décode le body JSON dans user
-
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			return	
+		}
+
+		err = repository.InsertUser(conn, user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return 
 		}
 		// retourne user en JSON comme tu sais déjà faire
 		userStr, err := json.Marshal(user)
@@ -68,11 +75,26 @@ func StartServer() {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(userStr)
 	}
-
+	h5 := func(w http.ResponseWriter, r *http.Request) {
+		users, err := repository.GetUsers(conn)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		userStr, err := json.Marshal(users)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(userStr)
+		
+	}
 	http.HandleFunc("/hello", h1)
 	http.HandleFunc("/", h2)
 	http.HandleFunc("/newUser", h3)
 	http.HandleFunc("/user", h4)
+	http.HandleFunc("/users", h5)
 
 	log.Println("Server listen port :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

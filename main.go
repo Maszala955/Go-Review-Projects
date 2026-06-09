@@ -2,27 +2,23 @@ package main
 
 import (
 	"fmt"
-	"main/models"
+
 	"main/handlers"
+	"main/repository"
 )
 
-
 func main() {
-	conn, err := ConnectDB()
+	conn, err := repository.ConnectDB()
 	if err != nil {
 		fmt.Println("Erreur de connexion", err)
 	}
 	fmt.Println("Connecté à PostgreSQL")
 
-	err = CreateTable(conn)
+	err = repository.CreateTable(conn)
 	if err != nil {
 		fmt.Println("Erreur de connexion", err)
 	}
 	
-	user := models.User{Name: "Test", Email: "Test@email.com", Age: 40}
-	err = InsertUser(conn, user)
-	if err != nil {
-		fmt.Println("Erreur d'insert", err)
-	}
-	handlers.StartServer()
+
+	handlers.StartServer(conn)
 }

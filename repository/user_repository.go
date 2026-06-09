@@ -39,6 +39,21 @@ func InsertUser(conn *pgx.Conn, user models.User) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
+}
+
+func GetUsers(conn *pgx.Conn) ([]models.User, error) {
+	query := `SELECT name, email, age FROM users`
+	rows, err := conn.Query(context.Background(), query)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []models.User
+	for rows.Next() {
+		var u models.User
+		rows.Scan(&u.Name, &u.Email, &u.Age)
+		users = append(users, u)
+	}
+	return users, nil
 }
