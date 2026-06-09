@@ -15,7 +15,6 @@ func Connect() (*pgx.Conn, error) {
 	fmt.Println("Connecté à PostgreSQL")
 	return conn, err
 }
-
 func CreateDBTable(err error, conn *pgx.Conn) {
 	err = CreateTable(conn)
 	if err != nil {
