@@ -18,7 +18,6 @@ func main() {
 	if err != nil {
 		fmt.Println("Erreur de connexion", err)
 	}
-	
 
 	handlers.StartServer(conn)
 }

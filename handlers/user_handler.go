@@ -90,8 +90,8 @@ func StartServer(conn *pgx.Conn) {
 		w.Write(userStr)
 		
 	}
-	http.HandleFunc("/hello", h1)
 	http.HandleFunc("/", h2)
+	http.HandleFunc("/hello", h1)
 	http.HandleFunc("/newUser", h3)
 	http.HandleFunc("/user", h4)
 	http.HandleFunc("/users", h5)
