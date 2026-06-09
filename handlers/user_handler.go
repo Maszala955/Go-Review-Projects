@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"main/models"
 	"main/repository"
@@ -32,9 +33,11 @@ func StartServer(conn *pgx.Conn) {
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Hello World")
 	}
+
 	h2 := func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "Bienvenue sur mon serveur")
 	}
+
 	h3 := func(w http.ResponseWriter, r *http.Request) {
 		name := r.URL.Query().Get("name")
 		email := r.URL.Query().Get("email")
@@ -53,6 +56,7 @@ func StartServer(conn *pgx.Conn) {
 		w.Write(jsonStr)
 
 	}
+
 	h4 := func(w http.ResponseWriter, r *http.Request) {
 		var user models.User
 		err := json.NewDecoder(r.Body).Decode(&user)
@@ -75,6 +79,7 @@ func StartServer(conn *pgx.Conn) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(userStr)
 	}
+
 	h5 := func(w http.ResponseWriter, r *http.Request) {
 		users, err := repository.GetUsers(conn)
 		if err != nil {
@@ -90,11 +95,30 @@ func StartServer(conn *pgx.Conn) {
 		w.Write(userStr)
 
 	}
+
+	h6 := func(w http.ResponseWriter, r *http.Request) {
+		idParse := strings.TrimPrefix(r.URL.Path, "/user/")
+		id, err := strconv.Atoi(idParse)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = repository.DeleteUser(conn, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+	
 	http.HandleFunc("/", h2)
 	http.HandleFunc("/hello", h1)
 	http.HandleFunc("/newUser", h3)
 	http.HandleFunc("/user", h4)
 	http.HandleFunc("/users", h5)
+	http.HandleFunc("/user/", h6)
 
 	log.Println("Server listen port :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

@@ -45,3 +45,13 @@ func GetUsers(conn *pgx.Conn) ([]models.User, error) {
 	}
 	return users, nil
 }
+
+func DeleteUser(conn *pgx.Conn, id int) error {
+	query := `DELETE FROM users WHERE id = $1`
+	_, err := conn.Exec(context.Background(), query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
