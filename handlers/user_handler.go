@@ -1,12 +1,13 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
-	"errors"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
+
+	"main/models"
 )
 
 // Deux concept clés :
@@ -36,7 +37,7 @@ func StartServer() {
 		email := r.URL.Query().Get("email")
 		ageStr := r.URL.Query().Get("age")
 		age, _ := strconv.Atoi(ageStr)
-		user, _ := NewUser(name, email, age)
+		user, _ := models.NewUser(name, email, age)
 		w.Header().Set("Content-Type", "application/json")
 
 		jsonStr, err := json.Marshal(user)
@@ -50,7 +51,7 @@ func StartServer() {
 
 	}
 	h4 := func(w http.ResponseWriter, r *http.Request) {
-		var user User
+		var user models.User
 		// décode le body JSON dans user
 
 		err := json.NewDecoder(r.Body).Decode(&user)
@@ -76,18 +77,4 @@ func StartServer() {
 	log.Println("Server listen port :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 
-}
-
-type User struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Age   int    `json:"age"`
-}
-
-func NewUser(name, email string, age int) (User, error) {
-	if age < 10 {
-		return User{}, errors.New("student too young")
-	} else {
-		return User{Name: name, Email: email, Age: age}, nil
-	}
 }

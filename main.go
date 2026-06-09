@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	
+	"main/models"
+	"main/handlers"
 )
 
 
@@ -18,10 +19,10 @@ func main() {
 		fmt.Println("Erreur de connexion", err)
 	}
 	
-	user := User{Name: "Test", Email: "Test@email.com", Age: 40}
+	user := models.User{Name: "Test", Email: "Test@email.com", Age: 40}
 	err = InsertUser(conn, user)
 	if err != nil {
 		fmt.Println("Erreur d'insert", err)
 	}
-	// StartServer()
+	handlers.StartServer()
 }

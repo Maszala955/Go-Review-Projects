@@ -1,10 +1,10 @@
-package main
+package repository
 
 import (
 	"context"
+	"main/models"
 
 	"github.com/jackc/pgx/v5"
-	"main/models"
 )
 
 func ConnectDB() (*pgx.Conn, error) {
@@ -30,7 +30,7 @@ func CreateTable(conn *pgx.Conn) error {
 	if err != nil {
 		return err
 	}
-	return  err
+	return  nil
 }
 
 func InsertUser(conn *pgx.Conn, user models.User) error {
@@ -40,5 +40,5 @@ func InsertUser(conn *pgx.Conn, user models.User) error {
 		return err
 	}
 
-	return err
+	return nil
 }
