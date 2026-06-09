@@ -58,13 +58,13 @@ func StartServer(conn *pgx.Conn) {
 		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
-			return	
+			return
 		}
 
 		err = repository.InsertUser(conn, user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
-			return 
+			return
 		}
 		// retourne user en JSON comme tu sais déjà faire
 		userStr, err := json.Marshal(user)
@@ -88,7 +88,7 @@ func StartServer(conn *pgx.Conn) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(userStr)
-		
+
 	}
 	http.HandleFunc("/", h2)
 	http.HandleFunc("/hello", h1)

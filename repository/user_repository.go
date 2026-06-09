@@ -7,18 +7,6 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func ConnectDB() (*pgx.Conn, error) {
-
-	urlDB := "postgres://gouser:password@localhost:5432/go_review"
-
-	conn, err := pgx.Connect(context.Background(), urlDB)
-	if err != nil {
-    return nil, err
-	}
-
-	return conn, nil
-}
-
 func CreateTable(conn *pgx.Conn) error {
 	query := `CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -30,7 +18,7 @@ func CreateTable(conn *pgx.Conn) error {
 	if err != nil {
 		return err
 	}
-	return  nil
+	return nil
 }
 
 func InsertUser(conn *pgx.Conn, user models.User) error {
