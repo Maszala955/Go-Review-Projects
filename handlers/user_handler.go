@@ -131,12 +131,40 @@ func StartServer(conn *pgx.Conn) {
 		}
 	}
 
+	h7 := func(w http.ResponseWriter, r *http.Request) {
+		var loginReq struct {
+			Email string `json:"email"`
+			Password string `json:"password"`
+		}
+
+		err := json.NewDecoder(r.Body).Decode(&loginReq)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		token, err := repository.Login(conn, loginReq.Email, loginReq.Password)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		tokenStr, err := json.Marshal(token)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(tokenStr)
+	}
+
 	http.HandleFunc("/hello", h1)
 	http.HandleFunc("/", h2)
 	http.HandleFunc("/newUser", h3)
 	http.HandleFunc("/user", h4)
 	http.HandleFunc("/users", h5)
 	http.HandleFunc("/user/", h6)
+	http.HandleFunc("/auth", h7)
+
 
 	log.Println("Server listen port :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

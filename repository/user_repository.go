@@ -22,8 +22,8 @@ func CreateTable(conn *pgx.Conn) error {
 }
 
 func InsertUser(conn *pgx.Conn, user models.User) error {
-	query := `INSERT INTO users (name, email, age) VALUES ($1, $2, $3)`
-	_, err := conn.Exec(context.Background(), query, user.Name, user.Email, user.Age)
+	query := `INSERT INTO users (name, email, age, password) VALUES ($1, $2, $3, $4)`
+	_, err := conn.Exec(context.Background(), query, user.Name, user.Email, user.Age, user.Password)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func InsertUser(conn *pgx.Conn, user models.User) error {
 }
 
 func GetUsers(conn *pgx.Conn) ([]models.User, error) {
-	query := `SELECT id, name, email, age FROM users`
+	query := `SELECT id, name, email, age, password FROM users`
 	rows, err := conn.Query(context.Background(), query)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func GetUsers(conn *pgx.Conn) ([]models.User, error) {
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		rows.Scan(&u.ID, &u.Name, &u.Email, &u.Age)
+		rows.Scan(&u.ID, &u.Name, &u.Email, &u.Age, &u.Password)
 		users = append(users, u)
 	}
 	return users, nil

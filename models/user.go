@@ -3,10 +3,11 @@ package models
 import "errors"
 
 type User struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Age   int    `json:"age"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Age      int    `json:"age"`
+	Password string `json:"password"`
 }
 
 func NewUser(name, email string, age int) (User, error) {
