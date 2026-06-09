@@ -31,7 +31,7 @@ func InsertUser(conn *pgx.Conn, user models.User) error {
 }
 
 func GetUsers(conn *pgx.Conn) ([]models.User, error) {
-	query := `SELECT name, email, age FROM users`
+	query := `SELECT id, name, email, age FROM users`
 	rows, err := conn.Query(context.Background(), query)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func GetUsers(conn *pgx.Conn) ([]models.User, error) {
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		rows.Scan(&u.Name, &u.Email, &u.Age)
+		rows.Scan(&u.ID, &u.Name, &u.Email, &u.Age)
 		users = append(users, u)
 	}
 	return users, nil
@@ -53,5 +53,14 @@ func DeleteUser(conn *pgx.Conn, id int) error {
 		return err
 	}
 
+	return nil
+}
+
+func UpdateUser(conn *pgx.Conn, id int, user models.User) error {
+	query := `UPDATE users SET name=$1, email=$2, age=$3 WHERE id=$4`
+	_, err := conn.Exec(context.Background(), query, user.Name, user.Email, user.Age, id)
+	if err != nil {
+		return err
+	}
 	return nil
 }

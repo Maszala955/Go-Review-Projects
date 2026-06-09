@@ -104,17 +104,35 @@ func StartServer(conn *pgx.Conn) {
 			return
 		}
 
-		err = repository.DeleteUser(conn, id)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		switch r.Method {
+		case "DELETE":
+			err = repository.DeleteUser(conn, id)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+
+		case "PUT":
+			var user models.User
+			err = json.NewDecoder(r.Body).Decode(&user)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			err = repository.UpdateUser(conn, id, user)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
 	}
-	
-	http.HandleFunc("/", h2)
+
 	http.HandleFunc("/hello", h1)
+	http.HandleFunc("/", h2)
 	http.HandleFunc("/newUser", h3)
 	http.HandleFunc("/user", h4)
 	http.HandleFunc("/users", h5)
@@ -122,5 +140,4 @@ func StartServer(conn *pgx.Conn) {
 
 	log.Println("Server listen port :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
-
 }
